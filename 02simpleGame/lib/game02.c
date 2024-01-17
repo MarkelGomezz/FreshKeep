@@ -27,8 +27,8 @@
 #include <stdio.h>
 
 int pantailaHasi();
-int Irudiakjarri(int zeregin);
-void refrescarpagina(int zeregin);
+int Irudiakjarri();
+void refrescarpagina();
 
 SDL_Window *Ventana = NULL;
 SDL_Surface *Superficie = NULL;
@@ -41,7 +41,6 @@ int kopuru, kop = 1, i;
 int soinuapiztutadago = 1;
 int lehenengoaldia = 1;
 int menuairekita = 0;
-int zeregin = 0;
 
 int pantailaHasi()
 {
@@ -67,7 +66,7 @@ int pantailaHasi()
     SDL_RenderDrawLine(gRenderer, 20, 20, 70, 70);
     SDL_Color kolor = {0x00, 0x00, 0x00};
 
-    kopuru = Irudiakjarri(0);
+    kopuru = Irudiakjarri();
 
     // soinua
     audioInit();
@@ -98,7 +97,7 @@ int pantailaHasi()
                         /*tics = SDL_GetTicks();*/
                         irudiaMugitubateskuinera(0);
                         irudiaMugitubateskuinera(1);
-                        refrescarpagina(1);
+                        refrescarpagina();
                     }
                     else if (menuairekita)
                     {
@@ -106,27 +105,26 @@ int pantailaHasi()
                         /*tics = SDL_GetTicks();*/
                         irudiaMugitubatezkerrera(0);
                         irudiaMugitubatezkerrera(1);
-                        refrescarpagina(1);
+                        refrescarpagina();
                     }
                 }
                 else if (ebentua.key.keysym.sym == TECLA_1)
                 {
                     if (soinuapiztutadago)
                     {
-
+                        soinuapiztutadago = 0;
                         Mix_PauseMusic();
                         irudiaMugitu(3, 1150, 1);
                         irudiaMugitu(2, 3000, 0);
-                        refrescarpagina(2);
-                        soinuapiztutadago = 0;
+                        refrescarpagina();
                     }
                     else
                     {
+                        soinuapiztutadago = 1;
                         Mix_ResumeMusic();
                         irudiaMugitu(2, 1150, 1);
                         irudiaMugitu(3, 3000, 0);
-                        refrescarpagina(2);
-                        soinuapiztutadago = 1;
+                        refrescarpagina();
                     }
                 }
                 break;
@@ -141,7 +139,7 @@ int pantailaHasi()
                 // SDL_DisplayMode mode;
                 if (ebentua.window.event == SDL_WINDOWEVENT_EXPOSED)
                 {
-                    refrescarpagina(0);
+                    refrescarpagina();
                 }
                 break;
             }
@@ -150,7 +148,7 @@ int pantailaHasi()
     return 0;
 }
 
-int Irudiakjarri(int zeregin)
+int Irudiakjarri()
 {
     int id = -1;
     /*id = irudiaKargatu(HASIERA_IMG); // 1
@@ -172,37 +170,27 @@ int Irudiakjarri(int zeregin)
         id = irudiaKargatu(HOSTOA_IMG);     // 1
         id = irudiaKargatu(SOINUAPIZTUTA);  // 2
         id = irudiaKargatu(SOINUAITZALITA); // 3
-        irudiaMugitu(0, -327, 0);
-        irudiaMugitu(1, 6, 1);
-        irudiaMugitu(2, 1150, 3);
-        irudiaMugitu(3, -1150, 5);
         lehenengoaldia = 0;
     }
-    if ((zeregin == 0) || (zeregin == 1))
+    if (!menuairekita)
     {
-        if (!menuairekita)
-        {
-            irudiaMugitu(0, -327, 0);
-            irudiaMugitu(1, 6, 1);
-        }
-        else if (menuairekita)
-        {
-            irudiaMugitu(0, -152, 0);
-            irudiaMugitu(1, 181, 1);
-        }
+        irudiaMugitu(0, -327, 0);
+        irudiaMugitu(1, 6, 1);
     }
-    else if ((zeregin == 0) || (zeregin == 2))
+    else if (menuairekita)
     {
-        if (soinuapiztutadago)
-        {
-            irudiaMugitu(2, -1150, 3);
-            irudiaMugitu(3, 1150, 3);
-        }
-        else if (!soinuapiztutadago)
-        {
-            irudiaMugitu(2, 1150, 3);
-            irudiaMugitu(3, -1150, 3);
-        }
+        irudiaMugitu(0, -152, 0);
+        irudiaMugitu(1, 181, 1);
+    }
+    if (soinuapiztutadago)
+    {
+        irudiaMugitu(2, 1150, 3);
+        irudiaMugitu(3, -1150, 3);
+    }
+    else if (!soinuapiztutadago)
+    {
+        irudiaMugitu(2, -1150, 3);
+        irudiaMugitu(3, 1150, 3);
     }
     /* //252,30
     id = irudiaKargatu(FONDO_ABAJO_IMG);
@@ -213,7 +201,7 @@ int Irudiakjarri(int zeregin)
     pantailaBerriztu();
     return id;
 }
-void refrescarpagina(int zeregin)
+void refrescarpagina()
 {
     SDL_GetWindowSize(Ventana, &screenWidth, &screenHeight);
     SDL_Log("h: %d, w: %d", screenHeight, screenWidth);
@@ -227,7 +215,7 @@ void refrescarpagina(int zeregin)
     SDL_Color kolor = {0x00, 0x00, 0x00};
     // idatzi(gRenderer, 40, 40, "FreshKeep", kolor, 40, "OpenSans-Regular.ttf");
     tituluaIdatzi("FRESHKEEP", kolor, Ventana, "(Titulo)ChauPhilomeneOne-Regular.ttf");
-    Irudiakjarri(zeregin);
+    Irudiakjarri();
 }
 
 /* if (Ventana == NULL)
